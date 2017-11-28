@@ -39,9 +39,7 @@
 <h1 class="title">
   Generate, Access and Analyze Application Logs
 </h1>
-
-
-
+<div class="container">
 <h2 class="subtitle">Log new message</h2>
 <p>
   <form action="" name="custommessage">
@@ -92,8 +90,11 @@
   </form>
 
 </p>
-<br>
 
-<div id = "messageResult" class = "container" style="display:none; background-color: whitesmoke;">
+
+<div id = "messageResult" style="display:none;">
+  <hr>
   <pre id="plogmessage"></pre> {% endblock %}
+</div>
+
 </div>
