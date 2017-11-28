@@ -16,7 +16,10 @@ app = Flask(__name__)
 if 'VCAP_SERVICES' in os.environ:
     appenv = json.loads(os.environ['VCAP_APPLICATION'])
 else:
-    raise ValueError('Expected cloud environment')
+    # Running locally, so build appenv JSON structure
+    appenv = {}
+    appenv['application_name'] = 'Local Log'
+
 
 # Return index page designed as single page application
 @app.route('/', methods=['GET'])
