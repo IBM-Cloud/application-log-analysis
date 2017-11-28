@@ -1,0 +1,4 @@
+applications:
+- name: application-log-analysis
+  memory: 256M
+  command: python cloud-logging.py

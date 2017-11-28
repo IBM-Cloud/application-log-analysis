@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    {% block head %}
+    <link rel=stylesheet type=text/css href="{{ url_for('static', filename='style.css') }}">
+    <title>{% block title %}{% endblock %} - IBM Cloud</title>
+    {% endblock %}
+</head>
+<body>
+    <div id="page">
+
+    {% block content %}{% endblock %}
+    </div>
+    <div id="footer">
+        <p><p/>
+        <hr/>
+        {% block footer %}
+           Made without harming any logs...
+        {% endblock %}
+    </div>
+</body>
+</html>
