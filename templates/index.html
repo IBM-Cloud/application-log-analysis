@@ -28,7 +28,8 @@
     xhttp = new XMLHttpRequest();
     xhttp.onreadystatechange = function () {
       if (xhttp.readyState == XMLHttpRequest.DONE) {
-        alert(xhttp.responseText);
+        document.getElementById("messageResult").style.display = "block";
+        document.getElementById("plogmessage").innerHTML = xhttp.responseText;
       }
     };
     xhttp.open('POST', "/setLogLevel");
