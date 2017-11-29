@@ -1,72 +1,104 @@
-{# index page, providing a form to submit a city name #}
+{# index page, providing a form to submit a city name #} 
 {% extends "base.html" %}
 {% block title %}World of Logging{% endblock %}
 {% block content %}
 <script type="text/javascript">
-function logMessage() {
-  var xhttp;
-  var level = document.forms['custommessage'].elements['level'].value;
-  var message = document.forms['custommessage'].elements['message'].value;
-  xhttp = new XMLHttpRequest();
-  xhttp.onreadystatechange = function() {
-    if (xhttp.readyState == XMLHttpRequest.DONE) {
-      var response=JSON.parse(xhttp.responseText);
-      document.getElementById("plogmessage").innerHTML = response.smsg;
-      document.getElementById("message").value='';
-    }
-  };
-  xhttp.open('POST', "/logit");
-  xhttp.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
-  var postVars = 'message='+message+'&level='+level;
-  xhttp.send(postVars);
-  return false;
-}
+  function logMessage() {
+    var xhttp;
+    var level = document.forms['custommessage'].elements['level'].value;
+    var message = document.forms['custommessage'].elements['message'].value;
+    xhttp = new XMLHttpRequest();
+    xhttp.onreadystatechange = function () {
+      if (xhttp.readyState == XMLHttpRequest.DONE) {
+        var response = JSON.parse(xhttp.responseText);
+        document.getElementById("messageResult").style.display = "block";
+        document.getElementById("plogmessage").innerHTML = "Logged message: " + response.smsg;
+        document.getElementById("message").value = '';
+      }
+    };
+    xhttp.open('POST', "/logit");
+    xhttp.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
+    var postVars = 'message=' + message + '&level=' + level;
+    xhttp.send(postVars);
+    return false;
+  }
 
-function setLogLevel(newLevel) {
-  var xhttp;
-  xhttp = new XMLHttpRequest();
-  xhttp.onreadystatechange = function() {
-    if (xhttp.readyState == XMLHttpRequest.DONE) {
-      alert(xhttp.responseText);
-    }
-  };
-  xhttp.open('POST', "/setLogLevel");
-  xhttp.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
-  var postVars = 'loggerlevel='+newLevel;
-  xhttp.send(postVars);
-  return false;
-}
-
+  function setLogLevel(newLevel) {
+    var xhttp;
+    xhttp = new XMLHttpRequest();
+    xhttp.onreadystatechange = function () {
+      if (xhttp.readyState == XMLHttpRequest.DONE) {
+        document.getElementById("messageResult").style.display = "block";
+        document.getElementById("plogmessage").innerHTML = xhttp.responseText;
+      }
+    };
+    xhttp.open('POST', "/setLogLevel");
+    xhttp.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
+    var postVars = 'loggerlevel=' + newLevel;
+    xhttp.send(postVars);
+    return false;
+  }
 </script>
-<h1>Hello and welcome to "{{ app["application_name"] }}"</h1>
-
-<h3>What do you want to log now?</h3>
+<h1 class="title">
+  Generate, Access and Analyze Application Logs
+</h1>
+<div class="container">
+<h2 class="subtitle">Log new message</h2>
 <p>
   <form action="" name="custommessage">
-  Message: <input type="text" name="message" id="message" maxlength="200" width="100">
-  <select name="level">
-    <option value="critical">critical</option>
-    <option value="error">error</option>
-    <option value="warn">warn</option>
-    <option value="info" selected="selected">info</option>
-    <option value="debug">debug</option>
-  </select>
-  <input type="button" type="submit" onclick="return logMessage()" value="Log Message">
-</form>
+    <div class="field">
+      <label class="label">Message</label>
+      <div class="control">
+        <input class="input" type="text" name="message" id="message" placeholder="log message...">
+      </div>
+    </div>
+
+    <div class="field">
+      <label class="label">Message Log Level</label>
+      <div class="control">
+        <div class="select">
+          <select name="level">
+            <option value="critical">critical</option>
+            <option value="error">error</option>
+            <option value="warn">warn</option>
+            <option value="info" selected="selected">info</option>
+            <option value="debug">debug</option>
+          </select>
+        </div>
+      </div>
+    </div>
+
+    <div class="field">
+      <div class="control">
+        <input type="submit" class="button  is-link" type="submit" onclick="return logMessage()" value="Log Message">
+      </div>
+    </div>
+  </form>
+
 </p>
-<br>
-<p>Set the current loglevel in logger (server side):
-<select name="loglevel" onchange="setLogLevel(this.value)">
-  <option value="critical">critical</option>
-  <option value="error">error</option>
-  <option value="warn" selected="selected">warn</option>
-  <option value="info">info</option>
-  <option value="debug">debug</option>
-</select>
+<p>
+  <hr>
+  <h2 class="subtitle">Set Logger Log Level on Server</h2>
+  <div class="field">
+    <div class="control">
+      <div class="select">
+        <select name="loglevel" onchange="setLogLevel(this.value)">
+          <option value="critical">critical</option>
+          <option value="error">error</option>
+          <option value="warn" selected="selected">warn</option>
+          <option value="info">info</option>
+          <option value="debug">debug</option>
+        </select>
+      </div>
+    </div>
+  </div>
+
 </p>
 
-<p><b>Logged message:</b><p>
-<div id="plogmessage"></div>
 
+<div id = "messageResult" style="display:none;">
+  <hr>
+  <pre id="plogmessage"></pre> {% endblock %}
+</div>
 
-{% endblock %}
+</div>
