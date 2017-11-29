@@ -27,7 +27,7 @@ def index():
     # log to both stdout and stderr, return template
     print "printed: rendering index"
     logger.info('logged: rendering index')
-    return render_template('index.html', app=appenv)
+    return render_template('index.html')
 
 # Receive message to be logged, log message and return response
 @app.route('/logit', methods=['POST'])
