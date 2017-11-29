@@ -1,5 +1,7 @@
-{# index page, providing a form to submit a city name #} {% extends "base.html" %} {% block title %}World of Logging{% endblock
-%} {% block content %}
+{# index page, providing a form to submit a city name #} 
+{% extends "base.html" %}
+{% block title %}World of Logging{% endblock %}
+{% block content %}
 <script type="text/javascript">
   function logMessage() {
     var xhttp;
@@ -26,7 +28,7 @@
     xhttp = new XMLHttpRequest();
     xhttp.onreadystatechange = function () {
       if (xhttp.readyState == XMLHttpRequest.DONE) {
-        console.log(xhttp.responseText);
+        alert(xhttp.responseText);
       }
     };
     xhttp.open('POST', "/setLogLevel");
@@ -50,8 +52,6 @@
       </div>
     </div>
 
-
-
     <div class="field">
       <label class="label">Message Log Level</label>
       <div class="control">
@@ -68,26 +68,29 @@
     </div>
 
     <div class="field">
-      <label class="label">Logger Log Level</label>
-      <div class="control">
-        <div class="select">
-          <select name="loglevel" onchange="setLogLevel(this.value)">
-            <option value="critical">critical</option>
-            <option value="error">error</option>
-            <option value="warn" selected="selected">warn</option>
-            <option value="info">info</option>
-            <option value="debug">debug</option>
-          </select>
-        </div>
-      </div>
-    </div>
-
-    <div class="field">
       <div class="control">
         <input type="submit" class="button  is-link" type="submit" onclick="return logMessage()" value="Log Message">
       </div>
     </div>
   </form>
+
+</p>
+<p>
+  <hr>
+  <h2 class="subtitle">Set Logger Log Level on Server</h2>
+  <div class="field">
+    <div class="control">
+      <div class="select">
+        <select name="loglevel" onchange="setLogLevel(this.value)">
+          <option value="critical">critical</option>
+          <option value="error">error</option>
+          <option value="warn" selected="selected">warn</option>
+          <option value="info">info</option>
+          <option value="debug">debug</option>
+        </select>
+      </div>
+    </div>
+  </div>
 
 </p>
 
