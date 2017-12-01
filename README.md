@@ -19,7 +19,7 @@ IBM Cloud offers three complementary services that help to obtain insights into 
 
 In this tutorial, we are going to take a look at how to generate, access and analyze application logs. The [documentation for IBM Cloud Log Analysis](https://console.bluemix.net/docs/services/CloudLogAnalysis/index.html) already includes a [tutorial on how to analyze logs for an app deployed in a Kubernetes cluster](https://console.bluemix.net/docs/services/CloudLogAnalysis/containers/tutorials/kibana_tutorial_1.html). Therefore, in this guide, we are going to use a Cloud Foundry app.
 
-Here is a screenshot of the app in this repository. Read the full guide at the [IBM Cloud tutorials](https://console.bluemix.net/docs/tutorials/index.html) page.   
+Here is a screenshot of the app in this repository. Read the full guide at the [IBM Cloud tutorials](https://console.bluemix.net/docs/tutorials/index.html) page: https://console.bluemix.net/docs/tutorials/application-log-analysis.html   
 ![](images/loggingApp.png)   
 
 
