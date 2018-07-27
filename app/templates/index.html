@@ -7,6 +7,7 @@
     var xhttp;
     var level = document.forms['custommessage'].elements['level'].value;
     var message = document.forms['custommessage'].elements['message'].value;
+    var csrfmiddlewaretoken = document.forms['custommessage'].elements['csrfmiddlewaretoken'].value;
     xhttp = new XMLHttpRequest();
     xhttp.onreadystatechange = function () {
       if (xhttp.readyState == XMLHttpRequest.DONE) {
@@ -18,13 +19,14 @@
     };
     xhttp.open('POST', "/logit");
     xhttp.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
-    var postVars = 'message=' + message + '&level=' + level;
+    var postVars = 'message=' + message + '&level=' + level + '&csrfmiddlewaretoken=' + csrfmiddlewaretoken;
     xhttp.send(postVars);
     return false;
   }
 
   function setLogLevel(newLevel) {
     var xhttp;
+    var csrfmiddlewaretoken = document.forms['custommessage'].elements['csrfmiddlewaretoken'].value;
     xhttp = new XMLHttpRequest();
     xhttp.onreadystatechange = function () {
       if (xhttp.readyState == XMLHttpRequest.DONE) {
@@ -34,7 +36,7 @@
     };
     xhttp.open('POST', "/setLogLevel");
     xhttp.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
-    var postVars = 'loggerlevel=' + newLevel;
+    var postVars = 'loggerlevel=' + newLevel + '&csrfmiddlewaretoken=' + csrfmiddlewaretoken;
     xhttp.send(postVars);
     return false;
   }
@@ -46,6 +48,7 @@
 <h2 class="subtitle">Log new message</h2>
 <p>
   <form action="" name="custommessage">
+      {% csrf_token %}
     <div class="field">
       <label class="label">Message</label>
       <div class="control">
