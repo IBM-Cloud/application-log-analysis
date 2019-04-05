@@ -1,0 +1,31 @@
+kind: Deployment
+apiVersion: apps/v1
+metadata:
+  name: app-log-analysis-deployment
+spec:
+  selector:
+    matchLabels:
+      run: app-log-analysis
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        run: app-log-analysis
+    spec:
+      containers:
+        - name: app-log-analysis
+          image: <region>.icr.io/<namespace>/<image>:<tag>
+---
+kind: Service
+apiVersion: v1
+metadata:
+  name: app-log-analysis-svc
+  labels:
+    run: app-log-analysis
+spec:
+  type: NodePort
+  ports:
+    - port: 8001
+      protocol: TCP
+  selector:
+    run: app-log-analysis
