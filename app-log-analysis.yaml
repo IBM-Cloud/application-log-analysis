@@ -6,7 +6,7 @@ spec:
   selector:
     matchLabels:
       run: app-log-analysis
-  replicas: 1
+  replicas: 2
   template:
     metadata:
       labels:
