@@ -16,7 +16,7 @@ import logging
 import json
 
 
-# get service information if on IBM Cloud / Cloud Foundry
+# get service information if on IBM Cloud
 if 'VCAP_SERVICES' in os.environ:
     appenv = json.loads(os.environ['VCAP_APPLICATION'])
 else:
