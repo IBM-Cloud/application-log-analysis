@@ -19,16 +19,23 @@ import prometheus_client
 import time
 import random
 
-# Metrics for endpoints that exist in this application, used when calling te logit, setLogLevel and createMetrics endpoints below.
+# Metrics for endpoints that exist in this application, incremented when calling the logit, setLogLevel and createMetrics endpoints below.
 logit_count = prometheus_client.Counter('wolam_logit_counter', 'A counter to keep track of calls to the logit endpoint.')
 set_log_level_count = prometheus_client.Counter('wolam_set_log_level_counter', 'A counter to keep track of calls to the setLogLevel endpoint.')
 create_metrics_count = prometheus_client.Counter('wolam_create_metrics_counter', 'A counter to keep track of calls to the createMetrics endpoint.')
 
-# Example counters that are randomly incremented/decreased when calling the createMetrics endpoint.
-api_count = prometheus_client.Counter('wolam_api_counter', 'A counter to keep track of calls to an API endpoint.')
-session_count = prometheus_client.Counter('wolam_session_counter', 'A counter to keep track of sessions.')
-active_session_gauge = prometheus_client.Gauge('wolam_active_session_gauge', 'A counter to keep track of active sessions.')
-histogram = prometheus_client.Histogram('wolam_histogram', 'An histogram')
+# Example of metrics that are randomly incremented/decreased when calling the createMetrics endpoint.
+
+# Counters go up, and reset when the process restarts.
+api_count = prometheus_client.Counter('wolam_api_counter', 'An example counter to keep track of calls to an API endpoint.', ['method', 'endpoint'])
+
+# Gauges can go up and down. Use set, inc or dec
+active_session_gauge = prometheus_client.Gauge('wolam_active_session_gauge', 'An example counter to keep track of active sessions (can go up/down).') 
+
+# Histograms track the size and number of events in buckets. This allows for aggregatable calculation of quantiles.
+histogram = prometheus_client.Histogram('wolam_histogram', 'An example histogram')
+
+# Summaries track the size and number of events.
 summary = prometheus_client.Summary('wolam_summary', 'A summary')
 
 prometheus_client.start_http_server(8002)
@@ -101,11 +108,11 @@ def createMetrics(request):
     metriccount=request.POST.get('metriccount', '1')
 
     for x in range(int(metriccount)):
-      api_count.inc(random.random() * 5)
-      session_count.inc(random.random())
-      active_session_gauge.set(random.random() * 10)
-      histogram.observe(random.random() * 10)
-      summary.observe(random.random() * 10)
+      api_count.labels('get', '/').inc()
+      api_count.labels('post', '/submit').inc()
+      active_session_gauge.set(random.random())
+      histogram.observe(random.random())
+      summary.observe(random.random())
       time.sleep(5)
 
     state = {"status": "Metrics Generated " + metriccount}
