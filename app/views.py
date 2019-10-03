@@ -1,4 +1,4 @@
-# (C) 2017 IBM
+# (C) 2019 IBM
 # Author: Henrik Loeser
 #
 # Very short sample app to demonstrate the Log Analytics service on IBM Cloud.
@@ -15,15 +15,23 @@ import os
 import logging
 import json
 
-import prometheus_client as prom
+import prometheus_client
 import time
 import random
 
-counter = prom.Counter('wolam_counter', 'A counter')
-gauge = prom.Gauge('wolam_gauge', 'A gauge')
-histogram = prom.Histogram('wolam_histogram', 'An histogram')
-summary = prom.Summary('wolam_summary', 'A summary')
-prom.start_http_server(8002)
+# Metrics for endpoints that exist in this application, used when calling te logit, setLogLevel and createMetrics endpoints below.
+logit_count = prometheus_client.Counter('wolam_logit_counter', 'A counter to keep track of calls to the logit endpoint.')
+set_log_level_count = prometheus_client.Counter('wolam_set_log_level_counter', 'A counter to keep track of calls to the setLogLevel endpoint.')
+create_metrics_count = prometheus_client.Counter('wolam_create_metrics_counter', 'A counter to keep track of calls to the createMetrics endpoint.')
+
+# Example counters that are randomly incremented/decreased when calling the createMetrics endpoint.
+api_count = prometheus_client.Counter('wolam_api_counter', 'A counter to keep track of calls to an API endpoint.')
+session_count = prometheus_client.Counter('wolam_session_counter', 'A counter to keep track of sessions.')
+active_session_gauge = prometheus_client.Gauge('wolam_active_session_gauge', 'A counter to keep track of active sessions.')
+histogram = prometheus_client.Histogram('wolam_histogram', 'An histogram')
+summary = prometheus_client.Summary('wolam_summary', 'A summary')
+
+prometheus_client.start_http_server(8002)
 
 # get service information if on IBM Cloud
 if 'VCAP_SERVICES' in os.environ:
@@ -33,7 +41,6 @@ else:
     appenv = {}
     appenv['application_name'] = 'Local Log'
 
-
 # Get an instance of a logger
 logger = logging.getLogger(appenv["application_name"])
 
@@ -41,6 +48,7 @@ def index(request):
     return render(request, 'index.html')
 
 def logit(request):
+    logit_count.inc()
     # Access form data from app
     message=request.POST.get('message', '')
     level=request.POST.get('level', '')
@@ -64,6 +72,7 @@ def logit(request):
     return JsonResponse({'smsg':message})    
 
 def setLogLevel(request):
+    set_log_level_count.inc()
     loggerlevel=request.POST.get('loggerlevel', '')
     # Log change to stdout
     print("setLogLevel: Setting to new level'",loggerlevel,"'")
@@ -88,11 +97,13 @@ def health(request):
     return JsonResponse(state)
 
 def createMetrics(request):
+    create_metrics_count.inc()
     metriccount=request.POST.get('metriccount', '1')
 
     for x in range(int(metriccount)):
-      counter.inc(random.random())
-      gauge.set(random.random() * 10)
+      api_count.inc(random.random() * 5)
+      session_count.inc(random.random())
+      active_session_gauge.set(random.random() * 10)
       histogram.observe(random.random() * 10)
       summary.observe(random.random() * 10)
       time.sleep(5)
@@ -107,7 +118,7 @@ def log(request):
 def monitor(request):
     context = {"monitor_page": "active"}
     return render(request, 'monitor.html', context)
-    
+
 def handler404(request):
     return render(request, '404.html', status=404)
 
