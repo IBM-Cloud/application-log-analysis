@@ -15,6 +15,15 @@ import os
 import logging
 import json
 
+import prometheus_client as prom
+import time
+import random
+
+counter = prom.Counter('wolam_counter', 'A counter')
+gauge = prom.Gauge('wolam_gauge', 'A gauge')
+histogram = prom.Histogram('wolam_histogram', 'An histogram')
+summary = prom.Summary('wolam_summary', 'A summary')
+prom.start_http_server(8002)
 
 # get service information if on IBM Cloud
 if 'VCAP_SERVICES' in os.environ:
@@ -78,7 +87,27 @@ def health(request):
     state = {"status": "UP"}
     return JsonResponse(state)
 
+def createMetrics(request):
+    metriccount=request.POST.get('metriccount', '1')
 
+    for x in range(int(metriccount)):
+      counter.inc(random.random())
+      gauge.set(random.random() * 10)
+      histogram.observe(random.random() * 10)
+      summary.observe(random.random() * 10)
+      time.sleep(5)
+
+    state = {"status": "Metrics Generated " + metriccount}
+    return JsonResponse(state)
+
+def log(request):
+    context = {"log_page": "active"}
+    return render(request, 'log.html', context)
+
+def monitor(request):
+    context = {"monitor_page": "active"}
+    return render(request, 'monitor.html', context)
+    
 def handler404(request):
     return render(request, '404.html', status=404)
 

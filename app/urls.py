@@ -23,4 +23,7 @@ urlpatterns = [
     url(r'^$', views.index, name='index'),
     url(r'^logit', views.logit, name='logit'),
     url(r'^setLogLevel', views.setLogLevel, name='setLogLevel'),
+    url(r'^createMetrics', views.createMetrics, name='createMetrics'),
+    url(r'^log', views.log, name='log'),
+    url(r'^monitor', views.monitor, name='monitor'),
 ]
