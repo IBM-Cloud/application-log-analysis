@@ -11,6 +11,9 @@ spec:
     metadata:
       labels:
         run: app-log-analysis
+      annotations:
+        prometheus.io/scrape: "true"
+        prometheus.io/port: "8002"
     spec:
       containers:
         - name: app-log-analysis
