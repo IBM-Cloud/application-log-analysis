@@ -27,13 +27,10 @@ create_metrics_count = prometheus_client.Counter('wolam_create_metrics_counter',
 # Example of metrics that are randomly incremented/decreased when calling the createMetrics endpoint.
 
 # Counters go up, and reset when the process restarts.
-api_count = prometheus_client.Counter('wolam_api_counter', 'An example counter to keep track of calls to an API endpoint.', ['method', 'endpoint'])
+api_count = prometheus_client.Counter('wolam_api_counter', 'An example counter to keep track of calls to an API endpoint.', ['method', 'endpoint', 'environment', 'region'])
 
 # Gauges can go up and down. Use set, inc or dec
 active_session_gauge = prometheus_client.Gauge('wolam_active_session_gauge', 'An example counter to keep track of active sessions (can go up/down).') 
-
-# Histograms track the size and number of events in buckets. This allows for aggregatable calculation of quantiles.
-histogram = prometheus_client.Histogram('wolam_histogram', 'An example histogram')
 
 # Summaries track the size and number of events.
 summary = prometheus_client.Summary('wolam_summary', 'A summary')
@@ -56,9 +53,12 @@ def index(request):
 
 def logit(request):
     logit_count.inc()
+
     # Access form data from app
     message=request.POST.get('message', '')
     level=request.POST.get('level', '')
+
+    api_count.labels('post', '/logit', 'development', 'eu-gb').inc()
 
     # Log to stdout stream
     print("Logit: Message:'",message,"' with level:'",level,"'")
@@ -81,6 +81,9 @@ def logit(request):
 def setLogLevel(request):
     set_log_level_count.inc()
     loggerlevel=request.POST.get('loggerlevel', '')
+
+    api_count.labels('post', '/setLogLevel', 'development', 'eu-gb').inc()
+
     # Log change to stdout
     print("setLogLevel: Setting to new level'",loggerlevel,"'")
     if loggerlevel=="critical":
@@ -101,17 +104,21 @@ def setLogLevel(request):
 
 def health(request):
     state = {"status": "UP"}
+    api_count.labels('get', '/health', 'development', 'eu-gb').inc()
     return JsonResponse(state)
 
 def createMetrics(request):
     create_metrics_count.inc()
     metriccount=request.POST.get('metriccount', '1')
+    region=request.POST.get('region', 'eu-gb')
+    environment=request.POST.get('environment', 'development')
+
+    api_count.labels('post', '/createMetrics', environment, region).inc()
 
     for x in range(int(metriccount)):
-      api_count.labels('get', '/').inc()
-      api_count.labels('post', '/submit').inc()
+      api_count.labels('get', '/profile', environment, region).inc()
+      api_count.labels('post', '/submit', environment, region).inc()
       active_session_gauge.set(random.random())
-      histogram.observe(random.random())
       summary.observe(random.random())
       time.sleep(5)
 
