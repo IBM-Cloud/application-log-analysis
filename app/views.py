@@ -52,13 +52,15 @@ def index(request):
     return render(request, 'index.html')
 
 def logit(request):
-    logit_count.inc()
+    # incrementing the metric with a random value to make it more interesting in the charts
+    logit_count.inc(random.random())
 
     # Access form data from app
     message=request.POST.get('message', '')
     level=request.POST.get('level', '')
 
-    api_count.labels('post', '/logit', 'development', 'eu-gb').inc()
+    # incrementing the metric with a random value to make it more interesting in the charts
+    api_count.labels('post', '/logit', 'development', 'eu-gb').inc(random.random())
 
     # Log to stdout stream
     print("Logit: Message:'",message,"' with level:'",level,"'")
@@ -79,10 +81,13 @@ def logit(request):
     return JsonResponse({'smsg':message})    
 
 def setLogLevel(request):
-    set_log_level_count.inc()
-    loggerlevel=request.POST.get('loggerlevel', '')
+    # incrementing the metric with a random value to make it more interesting in the charts
+    set_log_level_count.inc(random.random())
 
-    api_count.labels('post', '/setLogLevel', 'development', 'eu-gb').inc()
+    # incrementing the metric with a random value to make it more interesting in the charts
+    api_count.labels('post', '/setLogLevel', 'development', 'eu-gb').inc(random.random())
+
+    loggerlevel=request.POST.get('loggerlevel', '')
 
     # Log change to stdout
     print("setLogLevel: Setting to new level'",loggerlevel,"'")
@@ -104,7 +109,9 @@ def setLogLevel(request):
 
 def health(request):
     state = {"status": "UP"}
-    api_count.labels('get', '/health', 'development', 'eu-gb').inc()
+
+    # incrementing the metric with a random value to make it more interesting in the charts
+    api_count.labels('get', '/health', 'development', 'eu-gb').inc(random.random())
     return JsonResponse(state)
 
 def createMetrics(request):
@@ -113,14 +120,15 @@ def createMetrics(request):
     region=request.POST.get('region', 'eu-gb')
     environment=request.POST.get('environment', 'development')
 
-    api_count.labels('post', '/createMetrics', environment, region).inc()
+    # incrementing the metric with a random value to make it more interesting in the charts
+    api_count.labels('post', '/createMetrics', environment, region).inc(random.random())
 
     for x in range(int(metriccount)):
-      api_count.labels('get', '/profile', environment, region).inc()
-      api_count.labels('post', '/submit', environment, region).inc()
-      active_session_gauge.set(random.random())
-      summary.observe(random.random())
-      time.sleep(5)
+      api_count.labels('get', '/profile', environment, region).inc(random.random())
+      api_count.labels('post', '/submit', environment, region).inc(random.random())
+      active_session_gauge.set(random.random() * 15 - 5)
+      summary.observe(random.random() * 10)
+      time.sleep(1)
 
     state = {"status": "Metrics Generated " + metriccount}
     return JsonResponse(state)
