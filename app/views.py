@@ -24,8 +24,7 @@ logit_count = prometheus_client.Counter('wolam_logit_counter', 'A counter to kee
 set_log_level_count = prometheus_client.Counter('wolam_set_log_level_counter', 'A counter to keep track of calls to the setLogLevel endpoint.')
 create_metrics_count = prometheus_client.Counter('wolam_create_metrics_counter', 'A counter to keep track of calls to the createMetrics endpoint.')
 
-# Example of metrics that are randomly incremented/decreased when calling the createMetrics endpoint.
-
+# Example of metrics that are randomly incremented/decreased.
 # Counters go up, and reset when the process restarts.
 api_count = prometheus_client.Counter('wolam_api_counter', 'An example counter to keep track of calls to an API endpoint.', ['method', 'endpoint', 'environment', 'region'])
 
@@ -116,16 +115,19 @@ def health(request):
 
 def createMetrics(request):
     create_metrics_count.inc()
-    metriccount=request.POST.get('metriccount', '1')
+    metriccount=request.POST.get('metriccount', '25')
     region=request.POST.get('region', 'eu-gb')
     environment=request.POST.get('environment', 'development')
 
     # incrementing the metric with a random value to make it more interesting in the charts
     api_count.labels('post', '/createMetrics', environment, region).inc(random.random())
 
+    # creating a number of metrics with random values
     for x in range(int(metriccount)):
-      api_count.labels('get', '/profile', environment, region).inc(random.random())
-      api_count.labels('post', '/submit', environment, region).inc(random.random())
+      api_count.labels('post', '/logit', environment, region).inc(random.random())
+      api_count.labels('post', '/setLogLevel', environment, region).inc(random.random())
+      api_count.labels('get', '/log', environment, region).inc(random.random())
+      api_count.labels('get', '/monitor', environment, region).inc(random.random())
       active_session_gauge.set(random.random() * 15 - 5)
       summary.observe(random.random() * 10)
       time.sleep(1)
