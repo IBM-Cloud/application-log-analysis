@@ -4,6 +4,8 @@ Learn how the IBM Log Analysis with LogDNA service can be used to configure and 
 
 Moreover, you will also setup the IBM Cloud Monitoring with Sysdig service and configure Sysdig agent to monitor the performance and health of your application and your IBM Cloud Kubernetes Service cluster.
 
+The application includes a Prometheus client to generate custom metrics that are scraped by the Sysdig agent and available in the Sysdig UI.
+
 ![architecture diagram](https://cloud.ibm.com/docs-content/v1/content/3f1ab971edc4a192e5e4488fb8891348a58c4bf3/tutorials/images/solution12/Architecture.png)
 
 ## By end of the tutorial you will 

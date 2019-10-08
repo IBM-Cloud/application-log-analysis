@@ -1,4 +1,4 @@
-# (C) 2017 IBM
+# (C) 2017-2019 IBM
 # Author: Henrik Loeser
 #
 # Very short sample app to demonstrate the Log Analytics service on IBM Cloud.
@@ -15,6 +15,26 @@ import os
 import logging
 import json
 
+import prometheus_client
+import time
+import random
+
+# Metrics for endpoints that exist in this application, incremented when calling the logit, setLogLevel and createMetrics endpoints below.
+logit_count = prometheus_client.Counter('wolam_logit_counter', 'A counter to keep track of calls to the logit endpoint.')
+set_log_level_count = prometheus_client.Counter('wolam_set_log_level_counter', 'A counter to keep track of calls to the setLogLevel endpoint.')
+create_metrics_count = prometheus_client.Counter('wolam_create_metrics_counter', 'A counter to keep track of calls to the createMetrics endpoint.')
+
+# Example of metrics that are randomly incremented/decreased.
+# Counters go up, and reset when the process restarts.
+api_count = prometheus_client.Counter('wolam_api_counter', 'An example counter to keep track of calls to an API endpoint.', ['method', 'endpoint', 'environment', 'region'])
+
+# Gauges can go up and down. Use set, inc or dec
+active_session_gauge = prometheus_client.Gauge('wolam_active_session_gauge', 'An example counter to keep track of active sessions (can go up/down).') 
+
+# Summaries track the size and number of events.
+summary = prometheus_client.Summary('wolam_summary', 'A summary')
+
+prometheus_client.start_http_server(8002)
 
 # get service information if on IBM Cloud
 if 'VCAP_SERVICES' in os.environ:
@@ -24,7 +44,6 @@ else:
     appenv = {}
     appenv['application_name'] = 'Local Log'
 
-
 # Get an instance of a logger
 logger = logging.getLogger(appenv["application_name"])
 
@@ -32,9 +51,15 @@ def index(request):
     return render(request, 'index.html')
 
 def logit(request):
+    # incrementing the metric with a random value to make it more interesting in the charts
+    logit_count.inc(random.random())
+
     # Access form data from app
     message=request.POST.get('message', '')
     level=request.POST.get('level', '')
+
+    # incrementing the metric with a random value to make it more interesting in the charts
+    api_count.labels('post', '/logit', 'development', 'eu-gb').inc(random.random())
 
     # Log to stdout stream
     print("Logit: Message:'",message,"' with level:'",level,"'")
@@ -55,7 +80,14 @@ def logit(request):
     return JsonResponse({'smsg':message})    
 
 def setLogLevel(request):
+    # incrementing the metric with a random value to make it more interesting in the charts
+    set_log_level_count.inc(random.random())
+
+    # incrementing the metric with a random value to make it more interesting in the charts
+    api_count.labels('post', '/setLogLevel', 'development', 'eu-gb').inc(random.random())
+
     loggerlevel=request.POST.get('loggerlevel', '')
+
     # Log change to stdout
     print("setLogLevel: Setting to new level'",loggerlevel,"'")
     if loggerlevel=="critical":
@@ -76,8 +108,40 @@ def setLogLevel(request):
 
 def health(request):
     state = {"status": "UP"}
+
+    # incrementing the metric with a random value to make it more interesting in the charts
+    api_count.labels('get', '/health', 'development', 'eu-gb').inc(random.random())
     return JsonResponse(state)
 
+def createMetrics(request):
+    create_metrics_count.inc()
+    metriccount=request.POST.get('metriccount', '25')
+    region=request.POST.get('region', 'eu-gb')
+    environment=request.POST.get('environment', 'development')
+
+    # incrementing the metric with a random value to make it more interesting in the charts
+    api_count.labels('post', '/createMetrics', environment, region).inc(random.random())
+
+    # creating a number of metrics with random values
+    for x in range(int(metriccount)):
+      api_count.labels('post', '/logit', environment, region).inc(random.random())
+      api_count.labels('post', '/setLogLevel', environment, region).inc(random.random())
+      api_count.labels('get', '/log', environment, region).inc(random.random())
+      api_count.labels('get', '/monitor', environment, region).inc(random.random())
+      active_session_gauge.set(random.random() * 15 - 5)
+      summary.observe(random.random() * 10)
+      time.sleep(1)
+
+    state = {"status": "Metrics Generated " + metriccount}
+    return JsonResponse(state)
+
+def log(request):
+    context = {"log_page": "active"}
+    return render(request, 'log.html', context)
+
+def monitor(request):
+    context = {"monitor_page": "active"}
+    return render(request, 'monitor.html', context)
 
 def handler404(request):
     return render(request, '404.html', status=404)

@@ -1,0 +1,95 @@
+{% extends "base.html" %}
+{% block title %}World of Monitoring{% endblock %}
+{% block content %}
+<script type="text/javascript">
+  function createMetrics() {
+    document.getElementById("metricResult").style.display = "block";
+    document.getElementById("metricmessage").innerHTML = "Running....";
+    var xhttp;
+    var metriccount = document.forms['metric'].elements['metriccount'].value;
+    var environment = document.forms['metric'].elements['environment'].value;
+    var region = document.forms['metric'].elements['region'].value;
+    var csrfmiddlewaretoken = document.forms['metric'].elements['csrfmiddlewaretoken'].value;
+    xhttp = new XMLHttpRequest();
+    xhttp.onreadystatechange = function () {
+      if (xhttp.readyState == XMLHttpRequest.DONE) {
+        var response = JSON.parse(xhttp.responseText);
+        document.getElementById("metricResult").style.display = "block";
+        document.getElementById("metricmessage").innerHTML = "Result: " + response.status;
+      }
+    };
+    xhttp.open('POST', "/createMetrics");
+    xhttp.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
+    var postVars = 'metriccount=' + metriccount + '&environment=' + environment + '&region=' + region + '&csrfmiddlewaretoken=' + csrfmiddlewaretoken;
+    xhttp.send(postVars);
+    return false;
+  }
+</script>
+
+<h1 class="title">
+  Generate Metrics
+</h1>
+<div class="container">
+<h2 class="subtitle">Create Prometheus custom metrics</h2>
+<p>
+  <form action="" name="metric">
+    {% csrf_token %}
+
+    <div class="field">
+      <label class="label">Environment</label>
+      <div class="control">
+        <div class="select">
+          <select name="environment">
+            <option value="development" selected="selected">Development</option>
+            <option value="staging">Staging</option>
+            <option value="production">Production</option>
+          </select>
+        </div>
+      </div>
+    </div>
+
+    <div class="field">
+      <label class="label">Region</label>
+      <div class="control">
+        <div class="select">
+          <select name="region">
+            <option value="us-south">Dallas</option>
+            <option value="eu-fr">Frankfurt</option>
+            <option value="jp-tok">Japan</option>
+            <option value="eu-gb" selected="selected">London</option>
+            <option value="au-syd">Sydney</option>
+          </select>
+        </div>
+      </div>
+    </div>
+
+    <div class="field">
+      <label class="label">Number of times to generate a few random metrics (1 second delay between each loop)</label>
+      <div class="control">
+        <div class="select">
+          <select name="metriccount">
+            <option value="25" selected="selected">25</option>
+            <option value="50">50</option>
+            <option value="75">75</option>
+            <option value="100">100</option>
+            <option value="125">125</option>
+          </select>
+        </div>
+      </div>
+    </div>
+
+    <div class="field">
+      <div class="control">
+        <input type="submit" class="button  is-link" type="submit" onclick="return createMetrics()" value="Create Metrics">
+      </div>
+    </div>
+  </form>
+</p>
+
+<div id = "metricResult" style="display:none;">
+    <hr>
+    <pre id="metricmessage"></pre>
+  </div>
+
+</div>
+{% endblock %}

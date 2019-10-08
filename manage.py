@@ -1,4 +1,4 @@
-# (C) 2017 IBM
+# (C) 2017-2019 IBM
 # Author: Henrik Loeser
 #
 # Very short sample app to demonstrate the Log Analytics service on IBM Cloud.
