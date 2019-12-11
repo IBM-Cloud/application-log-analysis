@@ -17,7 +17,7 @@ spec:
     spec:
       containers:
         - name: app-log-analysis
-          image: <region>.icr.io/<namespace>/<image>:<tag>
+          image: $MYCONTAINERREGISGRY/$MYNAMESPACE/app-log-analysis:latest
 ---
 kind: Service
 apiVersion: v1
@@ -32,3 +32,17 @@ spec:
       protocol: TCP
   selector:
     run: app-log-analysis
+---
+apiVersion: extensions/v1beta1
+kind: Ingress
+metadata:
+  name: app-log-analysis-ingress
+spec:
+  rules:
+  - host: $MYINGRESSSUBDOMAIN
+    http:
+      paths:
+      - path: /
+        backend:
+          serviceName: app-log-analysis-svc
+          servicePort: 8001
