@@ -15,7 +15,6 @@
         var response = JSON.parse(xhttp.responseText);
         document.getElementById("messageResult").style.display = "block";
         document.getElementById("plogmessage").innerHTML = "Logged message: " + response.smsg;
-        document.getElementById("message").value = '';
       }
     };
     xhttp.open('POST', "/logit");
