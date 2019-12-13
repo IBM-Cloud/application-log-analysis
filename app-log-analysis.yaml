@@ -17,7 +17,7 @@ spec:
     spec:
       containers:
         - name: app-log-analysis
-          image: $MYCONTAINERREGISGRY/$MYNAMESPACE/app-log-analysis:latest
+          image: $MYREGISGRY/$MYNAMESPACE/$MYIMAGE:latest
 ---
 kind: Service
 apiVersion: v1
