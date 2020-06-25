@@ -13,6 +13,6 @@ The application includes a Prometheus client to generate custom metrics that are
 * Search, filter and visualize logs.
 * Monitor the health and performance of the app and cluster.
 
-For step-by-step instructions, refer this [tutorial](https://cloud.ibm.com/docs/tutorials?topic=solution-tutorials-application-log-analysis#application-log-analysis)
+For step-by-step instructions, refer this [tutorial](https://cloud.ibm.com/docs/solution-tutorials?topic=solution-tutorials-application-log-analysis)
 
-[The tutorials are part of the IBM Cloud documentation](https://cloud.ibm.com/docs/tutorials?topic=solution-tutorials-tutorials#tutorials).
+[The tutorials are part of the IBM Cloud documentation](https://cloud.ibm.com/docs/solution-tutorials?topic=solution-tutorials-tutorials#tutorials).
