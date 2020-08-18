@@ -6,7 +6,7 @@ Moreover, you will also setup the IBM Cloud Monitoring with Sysdig service and c
 
 The application includes a Prometheus client to generate custom metrics that are scraped by the Sysdig agent and available in the Sysdig UI.
 
-![architecture diagram](https://cloud.ibm.com/docs-content/v1/content/3f1ab971edc4a192e5e4488fb8891348a58c4bf3/tutorials/images/solution12/Architecture.png)
+![architecture diagram](https://cloud.ibm.com/docs-content/v1/content/4cd82811c6afbd7883529b5072ca7b106b2939ff/solution-tutorials/images/solution12/Architecture.png)
 
 ## By end of the tutorial you will 
 * Provision a Kubernetes cluster and deploy an application to generate log entries.
