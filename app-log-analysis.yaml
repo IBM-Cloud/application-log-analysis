@@ -33,16 +33,36 @@ spec:
   selector:
     run: app-log-analysis
 ---
-apiVersion: extensions/v1beta1
+apiVersion: networking.k8s.io/v1
 kind: Ingress
 metadata:
   name: app-log-analysis-ingress
+  annotations:
+    kubernetes.io/ingress.class: "public-iks-k8s-nginx"
 spec:
   rules:
   - host: $MYINGRESSSUBDOMAIN
     http:
       paths:
       - path: /
+        pathType: Prefix
         backend:
-          serviceName: app-log-analysis-svc
-          servicePort: 8001
+          service:
+            name: app-log-analysis-svc
+            port:
+              number: 8001
+# for older clusters, you can uncomment the deprecated Ingress syntax
+# and comment the Ingress definition above
+# apiVersion: extensions/v1beta1
+# kind: Ingress
+# metadata:
+#   name: app-log-analysis-ingress
+# spec:
+#   rules:
+#   - host: $MYINGRESSSUBDOMAIN
+#     http:
+#       paths:
+#       - path: /
+#         backend:
+#           serviceName: app-log-analysis-svc
+#           servicePort: 8001
