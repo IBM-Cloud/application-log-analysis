@@ -1,10 +1,8 @@
 # Analyze logs and monitor health of a Python Django application deployed on Kubernetes.
 
-Learn how the IBM Log Analysis service can be used to configure and access logs of a Kubernetes application that is deployed on IBM Cloud. You will deploy a Python application to a cluster provisioned on IBM Cloud Kubernetes Service, configure a LogDNA agent, generate different levels of application logs and access worker logs, pod logs or network logs. Then, you will search, filter and visualize those logs through Log Analysis with LogDNA Web UI.
+Learn how the IBM Log Analysis service can be used to configure and access logs of a Kubernetes application that is deployed on IBM Cloud. You will deploy a Python application to a cluster provisioned on IBM Cloud Kubernetes Service, configure a logging agent, generate different levels of application logs and access worker logs, pod logs or network logs. Then, you will search, filter and visualize those logs through Log Analysis Web UI.
 
-Moreover, you will also setup the IBM Cloud Monitoring service and configure agent to monitor the performance and health of your application and your IBM Cloud Kubernetes Service cluster.
-
-The application includes a Prometheus client to generate custom metrics that are scraped by the Sysdig agent and available in the Sysdig UI.
+Moreover, you will also setup the IBM Cloud Monitoring service and configure monitoring agent to monitor the performance and health of your application and your IBM Cloud Kubernetes Service cluster.
 
 ![architecture diagram](https://cloud.ibm.com/docs-content/v1/content/4cd82811c6afbd7883529b5072ca7b106b2939ff/solution-tutorials/images/solution12/Architecture.png)
 
