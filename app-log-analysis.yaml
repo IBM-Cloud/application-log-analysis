@@ -17,7 +17,7 @@ spec:
     spec:
       containers:
         - name: app-log-analysis
-          image: $MYREGISTRY/$MYNAMESPACE/$MYIMAGE:latest
+          image: ibmcom/tutorial-application-log-analysis
 ---
 kind: Service
 apiVersion: v1
