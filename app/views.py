@@ -19,6 +19,9 @@ import prometheus_client
 import time
 import random
 
+# Create a metric to track time spent and requests made.
+request_time = prometheus_client.Summary('wolam_request_processing_seconds', 'Time spent processing request')
+
 # Metrics for endpoints that exist in this application, incremented when calling the logit, setLogLevel and createMetrics endpoints below.
 logit_count = prometheus_client.Counter('wolam_logit_counter', 'A counter to keep track of calls to the logit endpoint.')
 set_log_level_count = prometheus_client.Counter('wolam_set_log_level_counter', 'A counter to keep track of calls to the setLogLevel endpoint.')
@@ -52,14 +55,14 @@ def index(request):
 
 def logit(request):
     # incrementing the metric with a random value to make it more interesting in the charts
-    logit_count.inc(random.random())
+    logit_count.inc()
 
     # Access form data from app
     message=request.POST.get('message', '')
     level=request.POST.get('level', '')
 
     # incrementing the metric with a random value to make it more interesting in the charts
-    api_count.labels('post', '/logit', 'development', 'eu-gb').inc(random.random())
+    api_count.labels(method='post', endpoint='/logit', environment='development', region='eu-gb').inc()
 
     # Log to stdout stream
     print("Logit: Message:'",message,"' with level:'",level,"'")
@@ -81,10 +84,10 @@ def logit(request):
 
 def setLogLevel(request):
     # incrementing the metric with a random value to make it more interesting in the charts
-    set_log_level_count.inc(random.random())
+    set_log_level_count.inc()
 
     # incrementing the metric with a random value to make it more interesting in the charts
-    api_count.labels('post', '/setLogLevel', 'development', 'eu-gb').inc(random.random())
+    api_count.labels(method='post', endpoint='/setLogLevel', environment='development', region='eu-gb').inc()
 
     loggerlevel=request.POST.get('loggerlevel', '')
 
@@ -110,9 +113,11 @@ def health(request):
     state = {"status": "UP"}
 
     # incrementing the metric with a random value to make it more interesting in the charts
-    api_count.labels('get', '/health', 'development', 'eu-gb').inc(random.random())
+    api_count.labels(method='get', endpoint='/health', environment='development', region='eu-gb').inc()
     return JsonResponse(state)
 
+# Decorate function with metric.
+@request_time.time()
 def createMetrics(request):
     create_metrics_count.inc()
     metriccount=request.POST.get('metriccount', '25')
@@ -120,14 +125,14 @@ def createMetrics(request):
     environment=request.POST.get('environment', 'development')
 
     # incrementing the metric with a random value to make it more interesting in the charts
-    api_count.labels('post', '/createMetrics', environment, region).inc(random.random())
+    api_count.labels(method='post', endpoint='/createMetrics', environment=environment, region=region).inc()
 
     # creating a number of metrics with random values
     for x in range(int(metriccount)):
-      api_count.labels('post', '/logit', environment, region).inc(random.random())
-      api_count.labels('post', '/setLogLevel', environment, region).inc(random.random())
-      api_count.labels('get', '/log', environment, region).inc(random.random())
-      api_count.labels('get', '/monitor', environment, region).inc(random.random())
+      api_count.labels(method='post', endpoint='/logit', environment=environment, region=region).inc()
+      api_count.labels(method='post', endpoint='/setLogLevel', environment=environment, region=region).inc()
+      api_count.labels(method='get', endpoint='/log', environment=environment, region=region).inc()
+      api_count.labels(method='get', endpoint='/monitor', environment=environment, region=region).inc()
       active_session_gauge.set(random.random() * 15 - 5)
       summary.observe(random.random() * 10)
       time.sleep(1)
