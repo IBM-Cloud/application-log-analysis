@@ -126,3 +126,4 @@ STATIC_URL = 'static/'
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 CSRF_COOKIE_DOMAIN='.appdomain.cloud'
+CSRF_TRUSTED_ORIGINS = ['https://*.appdomain.cloud/']
