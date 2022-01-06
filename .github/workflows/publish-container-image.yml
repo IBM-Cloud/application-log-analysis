@@ -8,6 +8,9 @@ jobs:
   publish_to_registry:
     name: Build and push image to registry
     runs-on: ubuntu-latest
+    env:
+      DOCKERHUB_ORG: ibmcom
+      DOCKERHUB_REPOSITORY: tutorial-application-log-analysis
     steps:
       - name: Check out the repo
         uses: actions/checkout@v2
@@ -22,7 +25,7 @@ jobs:
         id: meta
         uses: docker/metadata-action@v3.5.0
         with:
-          images: ${{ secrets.DOCKERHUB_ORG }}/${{ secrets.DOCKERHUB_REPOSITORY }}
+          images: ${{ env.DOCKERHUB_ORG }}/${{ env.DOCKERHUB_REPOSITORY }}
       
       - name: Build and push image
         uses: docker/build-push-action@v2.7.0
