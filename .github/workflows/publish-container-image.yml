@@ -9,8 +9,8 @@ jobs:
     name: Build and push image to registry
     runs-on: ubuntu-latest
     env:
-      DOCKERHUB_ORG: ibmcom
-      DOCKERHUB_REPOSITORY: tutorial-application-log-analysis
+      DOCKERHUB_ORG: dprosper
+      DOCKERHUB_REPOSITORY: tutorial
     steps:
       - name: Check out the repo
         uses: actions/checkout@v2
