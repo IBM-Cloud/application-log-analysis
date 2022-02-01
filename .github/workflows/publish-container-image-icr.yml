@@ -24,12 +24,12 @@ jobs:
       
       - name: Extract metadata (tags, labels) for Docker
         id: meta
-        uses: docker/metadata-action@v3.50
+        uses: docker/metadata-action@v3.6.2
         with:
           images: icr.io/${{ env.ICR_NAMESPACE }}/${{ env.ICR_REPOSITORY }}
       
       - name: Build and push image
-        uses: docker/build-push-action@v2.70
+        uses: docker/build-push-action@v2.8.0
         with:
           context: .
           push: true
