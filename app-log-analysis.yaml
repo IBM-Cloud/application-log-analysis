@@ -17,7 +17,7 @@ spec:
     spec:
       containers:
         - name: app-log-analysis
-          image: ibmcom/tutorial-application-log-analysis
+          image: icr.io/solution-tutorials/tutorial-application-log-analysis
 ---
 kind: Service
 apiVersion: v1
